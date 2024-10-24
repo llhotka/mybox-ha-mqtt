@@ -8,14 +8,8 @@ This document contains annotated YAML definitions for monitoring and controlling
 :END:
 
 This section specifies Home Assistant configuration files that will be tangled, and noweb references to code blocks that belong to each file.
-The following lines should be added to the main ~configuration.yaml~ file:
 
-#+begin_src yaml :tangle no
-  mqtt: !include mqtt.yaml
-  script: !include scripts.yaml
-#+end_src
-
-* MQTT sensors
+** MQTT sensors
 
 #+begin_src yaml :tangle mqtt.yaml
   sensor:
@@ -28,13 +22,19 @@ The following lines should be added to the main ~configuration.yaml~ file:
     <<binary_sensor.mybox_cable_locked>>
 #+end_src
 
-* Scripts
+** Scripts
 
 #+begin_src yaml :tangle scripts.yaml
   <<script.mybox_set_max_charge_current>>
   <<script.mybox_pause_charging>>
   <<script.mybox_resume_charging>>
   <<script.mybox_stop_charging>>
+#+end_src
+
+** Customizations
+
+#+begin_src yaml :tangle customizations.yaml
+  <<energy meter device class>>
 #+end_src
 
 * AC module
@@ -49,7 +49,7 @@ Possible values are ~Unplugged~, ~Plugged~, ~Charging~ and ~Paused~.
     icon: "mdi:ev-station"
     unique_id: "305537af-ce8e-4a9d-9edd-dee4aec55212"
     state_topic: >-
-      charger/e5qb-ekgg-48wz-o07w/ac-module-1-ac-module/evse-state
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/evse-state
 #+end_src
 
 ** Car state
@@ -73,7 +73,7 @@ The difference between states *C* and *D* is that with *D* the EV requires a ven
     icon: "mdi:car-electric"
     unique_id: "cda4fae0-10f5-4dbe-a7e5-ef6a331d3129"
     state_topic: >-
-      charger/e5qb-ekgg-48wz-o07w/ac-module-1-ac-module/car-state
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/car-state
 #+end_src
 
 ** Maximum charge current [A]
@@ -86,7 +86,7 @@ The difference between states *C* and *D* is that with *D* the EV requires a ven
     unit_of_measurement: "A"
     state_class: measurement
     state_topic: >-
-      charger/e5qb-ekgg-48wz-o07w/ac-module-1-ac-module/max-charge-current
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/max-charge-current
 #+end_src
 
 This script sets the value of the maximum charge current.
@@ -112,7 +112,7 @@ This script sets the value of the maximum charge current.
       - action: mqtt.publish
         data:
           topic: >-
-            charger/e5qb-ekgg-48wz-o07w/ac-module-1-ac-module/max-charge-current/set
+            ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/max-charge-current/set
           payload_template: "{{ value }}"
 #+end_src
 
@@ -124,7 +124,7 @@ This script sets the value of the maximum charge current.
     icon: "mdi:ev-plug-type2"
     unique_id: "f010644a-8e6f-4811-94b1-7a75fa05f7d2"
     state_topic: >-
-      charger/e5qb-ekgg-48wz-o07w/ac-module-1-ac-module/cable-locked
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/cable-locked
     payload_on: "true"
     payload_off: "false"
 #+end_src
@@ -142,7 +142,7 @@ This script sets the value of the maximum charge current.
     unit_of_measurement: "kW"
     state_class: measurement
     state_topic: >-
-      charger/e5qb-ekgg-48wz-o07w/ac-module-1-ev-meter/ev-meter-power
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-ev-meter/ev-meter-power
 #+end_src
 
 ** Energy [kWh]
@@ -158,15 +158,17 @@ The energy meter retains its value accross device resets as well as mains power 
     unit_of_measurement: "kWh"
     state_class: total_increasing
     state_topic: >-
-      charger/e5qb-ekgg-48wz-o07w/ac-module-1-ev-meter/ev-meter-energy
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-ev-meter/ev-meter-energy
 #+end_src
 
 This customization is needed in order to be able to add the energy sensor to the Home Assistant Energy dashboard.
 
-#+begin_src yaml :tangle customizations.yaml
+#+NAME: energy meter device class
+#+begin_src yaml
   sensor.mybox_meter_energy:
     device_class: energy
 #+end_src
+
 
 * Control
 
@@ -183,7 +185,7 @@ This customization is needed in order to be able to add the energy sensor to the
       - action: mqtt.publish
         data:
           topic: >-
-            charger/e5qb-ekgg-48wz-o07w/ac-module-1-ac-module/pause-charging/set
+            ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/pause-charging/set
 #+end_src
 
 ** Resume charging
@@ -199,7 +201,7 @@ This customization is needed in order to be able to add the energy sensor to the
       - action: mqtt.publish
         data:
           topic: >-
-            charger/e5qb-ekgg-48wz-o07w/ac-module-1-ac-module/resume-charging/set
+            ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/resume-charging/set
 #+end_src
 
 ** Stop charging
@@ -215,6 +217,5 @@ This customization is needed in order to be able to add the energy sensor to the
       - action: mqtt.publish
         data:
           topic: >-
-            charger/e5qb-ekgg-48wz-o07w/ac-module-1-ac-module/stop-charging/set
+            ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/stop-charging/set
 #+end_src
-
