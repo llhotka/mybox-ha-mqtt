@@ -1,0 +1,51 @@
+mybox_set_max_charge_current:
+  alias: "Set the maximum charge current"
+  description: >-
+    Set the maximum charge current for MyBox.
+  icon: "mdi:current-ac"
+  fields:
+    value:
+      name: "Max charge current value"
+      selector:
+        number:
+          min: 6
+          max: 16
+          step: 1
+          unit_of_measurement: "A"
+          mode: slider
+  sequence:
+    - action: mqtt.publish
+      data:
+        topic: >-
+          ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/max-charge-current/set
+        payload_template: "{{ value }}"
+mybox_pause_charging:
+  alias: "Pause charging"
+  description: >-
+    Pause EV charging from MyBox.
+  mode: single
+  sequence:
+    - action: mqtt.publish
+      data:
+        topic: >-
+          ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/pause-charging/set
+mybox_resume_charging:
+  alias: "Resume charging"
+  description: >-
+    Resume EV charging from MyBox.
+  mode: single
+  sequence:
+    - action: mqtt.publish
+      data:
+        topic: >-
+          ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/resume-charging/set
+mybox_stop_charging:
+  alias: "Stop charging"
+  description: >-
+    Stop EV charging from MyBox.
+  mode: single
+  sequence:
+    - action: mqtt.publish
+      data:
+        topic: >-
+          ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/stop-charging/set

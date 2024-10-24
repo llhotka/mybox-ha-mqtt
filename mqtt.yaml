@@ -1,0 +1,41 @@
+sensor:
+  - name: "MyBox max charge current"
+    icon: "mdi:current-ac"
+    unique_id: "e7446234-e557-4135-9117-3b9b6db3c0df"
+    unit_of_measurement: "A"
+    state_class: measurement
+    state_topic: >-
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/max-charge-current
+  - name: "MyBox EVSE state"
+    icon: "mdi:ev-station"
+    unique_id: "305537af-ce8e-4a9d-9edd-dee4aec55212"
+    state_topic: >-
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/evse-state
+  - name: "MyBox car state"
+    icon: "mdi:car-electric"
+    unique_id: "cda4fae0-10f5-4dbe-a7e5-ef6a331d3129"
+    state_topic: >-
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/car-state
+  - name: "MyBox meter power"
+    icon: "mdi:ev-station"
+    unique_id: "57e6e10e-b62d-4507-9982-0fd6dd5a139a"
+    unit_of_measurement: "kW"
+    state_class: measurement
+    state_topic: >-
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-ev-meter/ev-meter-power
+  - name: "MyBox EV meter energy"
+    icon: "mdi:ev-station"
+    object_id: "mybox_meter_energy"
+    unique_id: "ff4fd070-5f35-4a67-896d-b0b73fdb06ed"
+    unit_of_measurement: "kWh"
+    state_class: total_increasing
+    state_topic: >-
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-ev-meter/ev-meter-energy
+binary_sensor:
+  - name: "MyBox cable locked"
+    icon: "mdi:ev-plug-type2"
+    unique_id: "f010644a-8e6f-4811-94b1-7a75fa05f7d2"
+    state_topic: >-
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/cable-locked
+    payload_on: "true"
+    payload_off: "false"

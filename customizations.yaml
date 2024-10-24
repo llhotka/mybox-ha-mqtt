@@ -1,0 +1,2 @@
+sensor.mybox_meter_energy:
+  device_class: energy
