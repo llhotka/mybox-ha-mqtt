@@ -48,3 +48,6 @@ installing
 2. my emacs-lisp module
    [ob-yaml.el](https://github.com/llhotka/ob-yaml) that enables
    YAML mode in source code blocks. 
+
+GitHub now understands Org mode almost perfectly, so nicely rendered
+master file can also be viewed directly in the GitHub repo.
