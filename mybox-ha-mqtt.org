@@ -1,10 +1,45 @@
-* Sensors and scripts
+#+TITLE: Home Assistant definitions for MyBox wallbox
 
-This section contains definitions of sensors and services based on MQTT topics supported by the wallbox.
+This document contains annotated YAML definitions for monitoring and controlling a [[https://mybox.eco/produkty-kategorie/nabijeci-stanice/][MyBox]] wallbox in Home Assistant.
 
-** AC module
+* Configuration files
+:PROPERTIES:
+:header-args:yaml: :noweb tangle
+:END:
 
-*** EVSE state
+This section specifies Home Assistant configuration files that will be tangled, and noweb references to code blocks that belong to each file.
+The following lines should be added to the main ~configuration.yaml~ file:
+
+#+begin_src yaml :tangle no
+  mqtt: !include mqtt.yaml
+  script: !include scripts.yaml
+#+end_src
+
+* MQTT sensors
+
+#+begin_src yaml :tangle mqtt.yaml
+  sensor:
+    <<sensor.mybox_max_charge_current>>
+    <<sensor.mybox_evse_state>>
+    <<sensor.mybox_car_state>>
+    <<sensor.mybox_meter_power>>
+    <<sensor.mybox_meter_energy>>
+  binary_sensor:
+    <<binary_sensor.mybox_cable_locked>>
+#+end_src
+
+* Scripts
+
+#+begin_src yaml :tangle scripts.yaml
+  <<script.mybox_set_max_charge_current>>
+  <<script.mybox_pause_charging>>
+  <<script.mybox_resume_charging>>
+  <<script.mybox_stop_charging>>
+#+end_src
+
+* AC module
+
+** EVSE state
 
 Possible values are ~Unplugged~, ~Plugged~, ~Charging~ and ~Paused~.
 
@@ -17,13 +52,20 @@ Possible values are ~Unplugged~, ~Plugged~, ~Charging~ and ~Paused~.
       charger/e5qb-ekgg-48wz-o07w/ac-module-1-ac-module/evse-state
 #+end_src
 
-*** Car state
+** Car state
 
-| Value   | Meaning                       |
-|---------+-------------------------------|
-| STATE A | EV not connected              |
-| STATE B | EV connected but not charging |
-| STATE C | EV connected and charging     |
+The current charging state of the EV as per IES 61851-1, see this [[https://driivz.com/blog/ev-charging-guide/][blog post]].
+
+| Value   | Meaning                                       |
+|---------+-----------------------------------------------|
+| STATE A | Standby                                       |
+| STATE B | Vehicle detected                              |
+| STATE C | Ready for charging (ventilation not required) |
+| STATE D | Ready for charging (ventilation required)     |
+| STATE E | EVSE shut off                                 |
+| STATE F | Error                                         |
+
+The difference between states *C* and *D* is that with *D* the EV requires a ventilated location such as open air wallbox. 
 
 #+NAME: sensor.mybox_car_state
 #+begin_src yaml
@@ -34,7 +76,7 @@ Possible values are ~Unplugged~, ~Plugged~, ~Charging~ and ~Paused~.
       charger/e5qb-ekgg-48wz-o07w/ac-module-1-ac-module/car-state
 #+end_src
 
-*** Maximum charge current
+** Maximum charge current [A]
 
 #+NAME: sensor.mybox_max_charge_current
 #+begin_src yaml
@@ -47,14 +89,14 @@ Possible values are ~Unplugged~, ~Plugged~, ~Charging~ and ~Paused~.
       charger/e5qb-ekgg-48wz-o07w/ac-module-1-ac-module/max-charge-current
 #+end_src
 
-This script sets the value of the maximum charge current
+This script sets the value of the maximum charge current.
 
-#+NAME: script.set_mybox_max_charge_current
+#+NAME: script.mybox_set_max_charge_current
 #+begin_src yaml
-  set_mybox_max_charge_current:
-    alias: "Nastav maximální nabíjecí proud"
+  mybox_set_max_charge_current:
+    alias: "Set the maximum charge current"
     description: >-
-      Nastav maximální nabíjecí proud pro MyBox.
+      Set the maximum charge current for MyBox.
     icon: "mdi:current-ac"
     fields:
       value:
@@ -74,9 +116,9 @@ This script sets the value of the maximum charge current
           payload_template: "{{ value }}"
 #+end_src
 
-*** Cable locked?
+** Cable locked?
 
-#+NAME: sensor.mybox_cable_locked
+#+NAME: binary_sensor.mybox_cable_locked
 #+begin_src yaml
   - name: "MyBox cable locked"
     icon: "mdi:ev-plug-type2"
@@ -87,7 +129,10 @@ This script sets the value of the maximum charge current
     payload_off: "false"
 #+end_src
 
-** EV meter
+
+* EV meter
+
+** Power [kW]
 
 #+NAME: sensor.mybox_meter_power
 #+begin_src yaml
@@ -99,6 +144,10 @@ This script sets the value of the maximum charge current
     state_topic: >-
       charger/e5qb-ekgg-48wz-o07w/ac-module-1-ev-meter/ev-meter-power
 #+end_src
+
+** Energy [kWh]
+
+The energy meter retains its value accross device resets as well as mains power outages.
 
 #+NAME: sensor.mybox_meter_energy
 #+begin_src yaml
@@ -112,6 +161,8 @@ This script sets the value of the maximum charge current
       charger/e5qb-ekgg-48wz-o07w/ac-module-1-ev-meter/ev-meter-energy
 #+end_src
 
+This customization is needed in order to be able to add the energy sensor to the Home Assistant Energy dashboard.
+
 #+begin_src yaml :tangle customizations.yaml
   sensor.mybox_meter_energy:
     device_class: energy
@@ -124,9 +175,9 @@ This script sets the value of the maximum charge current
 #+NAME: script.mybox_pause_charging
 #+begin_src yaml
   mybox_pause_charging:
-    alias: "Pozastav nabíjení"
+    alias: "Pause charging"
     description: >-
-      Pozastav nabíjení EV z MyBoxu.
+      Pause EV charging from MyBox.
     mode: single
     sequence:
       - action: mqtt.publish
@@ -140,9 +191,9 @@ This script sets the value of the maximum charge current
 #+NAME: script.mybox_resume_charging
 #+begin_src yaml
   mybox_resume_charging:
-    alias: "Obnov nabíjení"
+    alias: "Resume charging"
     description: >-
-      Obnov nabíjení EV z MyBoxu.
+      Resume EV charging from MyBox.
     mode: single
     sequence:
       - action: mqtt.publish
@@ -156,9 +207,9 @@ This script sets the value of the maximum charge current
 #+NAME: script.mybox_stop_charging
 #+begin_src yaml
   mybox_stop_charging:
-    alias: "Ukonči nabíjení"
+    alias: "Stop charging"
     description: >-
-      Ukonči nabíjení EV z MyBoxu.
+      Stop EV charging from MyBox.
     mode: single
     sequence:
       - action: mqtt.publish
