@@ -50,4 +50,5 @@ installing
    YAML mode in source code blocks. 
 
 GitHub now understands Org mode almost perfectly, so nicely rendered
-master file can also be viewed directly in the GitHub repo.
+[master file](mybox-ha-mqtt.org) can also be viewed directly in the
+GitHub repo.
