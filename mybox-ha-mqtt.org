@@ -2,6 +2,8 @@
 
 This document contains annotated YAML definitions for monitoring and controlling a [[https://mybox.eco/produkty-kategorie/nabijeci-stanice/][MyBox]] wallbox in Home Assistant.
 
+All occurrances of the placeholders ROOT_TOPIC and DEVICE_ID below have to be replaced with the actual root topic (configured in [[https://cloud.mybox.pro/admin-panel/devices-management][MyBox portal]]) and devide ID, respectively. 
+
 * Configuration files
 :PROPERTIES:
 :header-args:yaml: :noweb tangle
@@ -9,7 +11,7 @@ This document contains annotated YAML definitions for monitoring and controlling
 
 This section specifies Home Assistant configuration files that will be tangled, and noweb references to code blocks that belong to each file.
 
-** MQTT sensors
+** mqtt.yaml
 
 #+begin_src yaml :tangle mqtt.yaml
   sensor:
@@ -22,7 +24,7 @@ This section specifies Home Assistant configuration files that will be tangled, 
     <<binary_sensor.mybox_cable_locked>>
 #+end_src
 
-** Scripts
+** scripts.yaml
 
 #+begin_src yaml :tangle scripts.yaml
   <<script.mybox_set_max_charge_current>>
@@ -31,7 +33,7 @@ This section specifies Home Assistant configuration files that will be tangled, 
   <<script.mybox_stop_charging>>
 #+end_src
 
-** Customizations
+** customizations.yaml
 
 #+begin_src yaml :tangle customizations.yaml
   <<energy meter device class>>
