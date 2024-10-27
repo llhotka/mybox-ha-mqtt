@@ -5,6 +5,9 @@ sensors and scripts that can be used for integrating a
 [MyBox](https://mybox.eco/produkty-kategorie/nabijeci-stanice)
 wallbox to Home Assistant.
 
+A step-by-step procedure for integrating a MyBox wallbox to Home
+Assistant is described in this [blog post](https://blog.lhotka.name/posts/mybox-home-assistant).
+
 The master file [mybox-ha-mqtt.org](./mybox-ha-mqtt.org) is written in
 the Emacs [Org mode](https://orgmode.org) syntax and uses its literate
 programming capabilities for generating (“tangling”) the following
@@ -49,6 +52,6 @@ installing
    [ob-yaml.el](https://github.com/llhotka/ob-yaml) that enables
    YAML mode in source code blocks. 
 
-GitHub now understands Org mode almost perfectly, so nicely rendered
+GitHub now understands Org mode syntax almost perfectly, so nicely rendered
 [master file](mybox-ha-mqtt.org) can also be viewed directly in the
 GitHub repo.
