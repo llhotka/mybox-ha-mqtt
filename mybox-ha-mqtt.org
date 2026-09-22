@@ -20,6 +20,8 @@ This section specifies Home Assistant configuration files that will be tangled, 
     <<sensor.mybox_car_state>>
     <<sensor.mybox_meter_power>>
     <<sensor.mybox_meter_energy>>
+    <<sensor.mybox_session_time>>
+    <<sensor.mybox_session_energy_delivered>>
   binary_sensor:
     <<binary_sensor.mybox_cable_locked>>
 #+end_src
@@ -171,6 +173,33 @@ This customization is needed in order to be able to add the energy sensor to the
     device_class: energy
 #+end_src
 
+* Charging session
+
+** Charging time
+
+#+NAME: sensor.mybox_session_time
+#+begin_src yaml
+  - name: "MyBox charging session time"
+    icon: "mdi:ev-station"
+    default_entity_id: sensor.mybox_session_time
+    unique_id: "7fc7c76b-d4ff-44b2-bd4a-1328f667204f"
+    state_topic: >-
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-charging-session/charging-time
+#+end_src
+
+** Energy delivered
+
+#+NAME: sensor.mybox_session_energy_delivered
+#+begin_src yaml
+  - name: "MyBox charging session energy delivered"
+    icon: "mdi:ev-station"
+    default_entity_id: sensor.mybox_session_energy_delivered
+    unique_id: "cdfbeb75-d27f-4882-a4fd-961c5b9a3abb"
+    unit_of_measurement: "kWh"
+    state_class: total_increasing
+    state_topic: >-
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-charging-session/energy-delivered
+#+end_src
 
 * Control
 

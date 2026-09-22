@@ -31,6 +31,20 @@ sensor:
     state_class: total_increasing
     state_topic: >-
       ROOT_TOPIC/DEVICE_ID/ac-module-1-ev-meter/ev-meter-energy
+  - name: "MyBox charging session time"
+    icon: "mdi:ev-station"
+    default_entity_id: sensor.mybox_session_time
+    unique_id: "7fc7c76b-d4ff-44b2-bd4a-1328f667204f"
+    state_topic: >-
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-charging-session/charging-time
+  - name: "MyBox charging session energy delivered"
+    icon: "mdi:ev-station"
+    default_entity_id: sensor.mybox_session_energy_delivered
+    unique_id: "cdfbeb75-d27f-4882-a4fd-961c5b9a3abb"
+    unit_of_measurement: "kWh"
+    state_class: total_increasing
+    state_topic: >-
+      ROOT_TOPIC/DEVICE_ID/ac-module-1-charging-session/energy-delivered
 binary_sensor:
   - name: "MyBox cable locked"
     icon: "mdi:ev-plug-type2"
