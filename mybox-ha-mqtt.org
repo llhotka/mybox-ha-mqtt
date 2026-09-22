@@ -117,7 +117,7 @@ This script sets the value of the maximum charge current.
         data:
           topic: >-
             ROOT_TOPIC/DEVICE_ID/ac-module-1-ac-module/max-charge-current/set
-          payload_template: "{{ value }}"
+          payload: "{{ value }}"
 #+end_src
 
 ** Cable locked?
